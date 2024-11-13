@@ -1,17 +1,11 @@
 import { StyleSheet, View } from "react-native"
 import { Calendar } from "react-native-calendars"
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context"
-import { Collapsible } from "@/components/Collapsible"
-import { ExternalLink } from "@/components/ExternalLink"
-import ParallaxScrollView from "@/components/ParallaxScrollView"
-import { ThemedView } from "@/components/ThemedView"
-import { IconSymbol } from "@/components/ui/IconSymbol"
 
 const BaseCalendar = () => {
   return (
     <View>
       <Calendar
-        style={{ width: "100%" }}
         markedDates={{
           "2023-06-25": { selected: true, marked: true },
           "2023-06-24": { marked: true },
@@ -58,15 +52,4 @@ export default function FlowCalendar() {
   )
 }
 
-const styles = StyleSheet.create({
-  headerImage: {
-    color: "#808080",
-    bottom: -90,
-    left: -35,
-    position: "absolute",
-  },
-  titleContainer: {
-    flexDirection: "row",
-    gap: 8,
-  },
-})
+const styles = StyleSheet.create({})
