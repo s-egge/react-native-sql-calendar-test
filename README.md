@@ -1,3 +1,9 @@
+# Calendar / SQL Test
+
+This repo is starting a React Native w/Expo app from scratch in order to test a basic calendar and SQLite database.
+
+Right now, the web version is broken, and seems to be a [common issue](https://github.com/expo/expo/issues/32843) with the new Expo SDK 52. I can still open it on an iPhone using Expo Go.
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
