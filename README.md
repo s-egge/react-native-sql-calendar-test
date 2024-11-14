@@ -4,11 +4,14 @@ This repo is for starting a React Native w/Expo app from scratch in order to tes
 
 There are bugs, especially with the data not syncing up well when saving or changing days without refreshing the calendar manually with the button. I didn't bother implementing loading indicators either.
 
+https://github.com/user-attachments/assets/c47b23b5-37fc-4ff4-ab49-e73dd519aee0
+
+
 ## Running The Project
 
 - Download the repo
 - `npm install`
 - `npx expo start`
-- On your mobile phone, download the Expo Go app and then scan the QR code in the terminal
+- On your mobile phone (iOS or Android), download the Expo Go app and then scan the QR code in the terminal
 
 Right now, the web version is broken, and seems to be a [common issue](https://github.com/expo/expo/issues/32843) with the new Expo SDK 52. Expo's SQLite doesn't work on web, only mobile, so even when this issue gets fixed it won't work in the browser.
