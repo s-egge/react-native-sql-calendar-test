@@ -64,3 +64,11 @@ export const updateDay = async (date: string, flowIntensity: number) => {
 
   console.log("Updated day in database")
 }
+
+export const deleteAllDays = async () => {
+  if (!db) {
+    await openDatabase()
+  }
+  await db.execAsync(`DELETE FROM days;`)
+  console.log("Deleted all days from database")
+}

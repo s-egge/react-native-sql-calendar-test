@@ -1,20 +1,45 @@
-import { useState, useEffect } from "react"
-import { StyleSheet, View } from "react-native"
+import { useState, useEffect, useMemo } from "react"
+import { StyleSheet, View, Button } from "react-native"
 import { Calendar } from "react-native-calendars"
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context"
 import DayView from "@/components/DayView"
-import { getOneDay } from "@/db/database"
+import { getOneDay, getAllDays } from "@/db/database"
 import type { DayData } from "@/constants/Interfaces"
 
-// following this tutorial: https://www.geeksforgeeks.org/how-to-create-calendar-app-in-react-native/s
 export default function FlowCalendar() {
   // get today's date
   const today = new Date().toISOString().split("T")[0]
-  const [selectedDate, setSelectedDate] = useState<string | null>(today)
+  const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const handleSelectDate = (date: string) => {
     setSelectedDate(date)
   }
   const [todayData, setTodayData] = useState<DayData | null>(null)
+  const [markedDatesObj, setMarkedDates] = useState<any>({})
+
+  async function refreshCalendar() {
+    const allDays = await getAllDays()
+    const newMarkedDates: {
+      [key: string]: { marked: boolean; dotColor: string }
+    } = {}
+    if (allDays) {
+      const newMarkedDates: any = {}
+      allDays.forEach((day: any) => {
+        newMarkedDates[day.date] = {
+          marked: true,
+          dotColor: day.flow_intensity > 0 ? "red" : "transparent",
+          selected: day.date === today,
+        }
+      })
+      setMarkedDates(newMarkedDates)
+      console.log("Marked dates: ", markedDatesObj)
+      setSelectedDate(today)
+    }
+  }
+
+  // get all days and create markedDates on mount
+  useEffect(() => {
+    refreshCalendar()
+  }, [])
 
   // testing selected date
   useEffect(() => {
@@ -26,6 +51,23 @@ export default function FlowCalendar() {
 
     async function fetchData(selectedDate: string) {
       const day = await getOneDay(selectedDate)
+      const newMarkedDates = { ...markedDatesObj }
+
+      //reset old selected date
+      Object.keys(newMarkedDates).forEach((date) => {
+        newMarkedDates[date] = {
+          ...newMarkedDates[date],
+          selected: false,
+        }
+      })
+
+      // set new selected date
+      newMarkedDates[selectedDate] = {
+        ...newMarkedDates[selectedDate],
+        selected: true,
+      }
+      setMarkedDates(newMarkedDates)
+
       if (day) {
         setTodayData(day as DayData)
       } else {
@@ -44,34 +86,13 @@ export default function FlowCalendar() {
     <SafeAreaProvider>
       <SafeAreaView>
         <View>
+          <View style={styles.button}>
+            <Button title="Refresh Calendar" onPress={refreshCalendar}></Button>
+          </View>
           <Calendar
+            key={markedDatesObj}
             maxDate={today}
-            markedDates={{
-              ...(selectedDate && {
-                [selectedDate]: { selected: true },
-              }),
-              "2024-11-04": {
-                marked: true,
-                dotColor: "pink",
-                selected: selectedDate === "2024-11-04",
-              },
-              "2024-11-05": {
-                marked: true,
-                dotColor: "red",
-                selected: selectedDate === "2024-11-05",
-              },
-              "2024-11-06": {
-                marked: true,
-                selected: selectedDate === "2024-11-06",
-                dotColor: "red",
-                activeOpacity: 0,
-              },
-              "2024-11-07": {
-                marked: true,
-                dotColor: "pink",
-                selected: selectedDate === "2024-11-07",
-              },
-            }}
+            markedDates={markedDatesObj}
             onDayPress={(day: { dateString: string }) =>
               handleSelectDate(day.dateString)
             }
@@ -109,4 +130,11 @@ export default function FlowCalendar() {
   )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: "#ffffff",
+    margin: 8,
+    borderRadius: 8,
+    padding: 4,
+  },
+})

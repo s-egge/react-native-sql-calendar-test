@@ -1,56 +1,14 @@
 # Calendar / SQL Test
 
-This repo is starting a React Native w/Expo app from scratch in order to test a basic calendar and SQLite database.
+This repo is for starting a React Native w/Expo app from scratch in order to test a basic calendar ([React Native Calendars](https://wix.github.io/react-native-calendars/docs/Intro)) and SQLite database ([Expo's SQLite library](https://docs.expo.dev/versions/latest/sdk/sqlite/)). It was cobbled together very quickly for a proof-of-concept and does not look very good, as the focus is only on seeing if it will work and what it might look like (without much styling effort). I used ChatGPT for a small amount of code generation (credited in the code) and for occasional debugging in order to get this up quickly. I also used a lot of the base code from the current Expo starter template (`npx create-expo-app@latest`) for the navigation and text/containers.
 
-Right now, the web version is broken, and seems to be a [common issue](https://github.com/expo/expo/issues/32843) with the new Expo SDK 52. I can still open it on an iPhone using Expo Go.
+There are bugs, especially with the data not syncing up well when saving or changing days without refreshing the calendar manually with the button. I didn't bother implementing loading indicators either.
 
-# Welcome to your Expo app 👋
+## Running The Project
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+- Download the repo
+- `npm install`
+- `npx expo start`
+- On your mobile phone, download the Expo Go app and then scan the QR code in the terminal
 
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-    npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Right now, the web version is broken, and seems to be a [common issue](https://github.com/expo/expo/issues/32843) with the new Expo SDK 52. Expo's SQLite doesn't work on web, only mobile, so even when this issue gets fixed it won't work in the browser.
