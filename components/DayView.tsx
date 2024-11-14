@@ -1,25 +1,30 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { StyleSheet, View, TouchableOpacity, Button } from "react-native"
 import { ThemedText } from "@/components/ThemedText"
 import { ThemedView } from "@/components/ThemedView"
+import { insertDay } from "@/db/database"
 
-function FlowRadioButtons() {
-  const [selectedOption, setSelectedOption] = useState<string>("None")
+const flowMap = { None: 0, Spotting: 1, Light: 2, Medium: 3, Heavy: 4 }
 
+function FlowRadioButtons({
+  selectedOption,
+  setSelectedOption,
+}: {
+  selectedOption: number
+  setSelectedOption: (option: number) => void
+}) {
   const options = ["None", "Spotting", "Light", "Medium", "Heavy"]
 
   return (
     <View style={styles.container}>
-      {options.map((option) => (
+      {options.map((option, index) => (
         <TouchableOpacity
           key={option}
           style={styles.radioContainer}
-          onPress={() => setSelectedOption(option)}
+          onPress={() => setSelectedOption(index)}
         >
           <View style={styles.radioCircle}>
-            {selectedOption === option && (
-              <View style={styles.selectedCircle} />
-            )}
+            {selectedOption === index && <View style={styles.selectedCircle} />}
           </View>
           <ThemedText style={styles.radioText}>{option}</ThemedText>
         </TouchableOpacity>
@@ -28,24 +33,38 @@ function FlowRadioButtons() {
   )
 }
 
-export default function DayView({ date }: { date: string }) {
+export default function DayView({
+  date,
+  dateFlow,
+}: {
+  date: string
+  dateFlow: number
+}) {
+  const [flow, setFlow] = useState<number>(dateFlow)
+
   function onSave() {
-    console.log("save")
+    console.log("save: " + date + " " + flow)
+    insertDay(date, flow)
   }
+
+  useEffect(() => {
+    console.log("dateFlow: " + dateFlow)
+    setFlow(dateFlow)
+  }, [dateFlow])
 
   return (
     <View>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">{date}</ThemedText>
         <View style={styles.button}>
-          <Button onPress={() => onSave()} title="save">
-            Save
-          </Button>
+          <Button onPress={() => onSave()} title="Save"></Button>
         </View>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="defaultSemiBold">Flow</ThemedText>
-        <FlowRadioButtons />
+        <ThemedText type="default">Flow from calendar: {dateFlow}</ThemedText>
+        <ThemedText type="default">Flow from state: {flow}</ThemedText>
+        <FlowRadioButtons selectedOption={flow} setSelectedOption={setFlow} />
       </ThemedView>
     </View>
   )

@@ -3,6 +3,8 @@ import { StyleSheet, View } from "react-native"
 import { Calendar } from "react-native-calendars"
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context"
 import DayView from "@/components/DayView"
+import { getOneDay } from "@/db/database"
+import type { DayData } from "@/constants/Interfaces"
 
 // following this tutorial: https://www.geeksforgeeks.org/how-to-create-calendar-app-in-react-native/s
 export default function FlowCalendar() {
@@ -12,11 +14,31 @@ export default function FlowCalendar() {
   const handleSelectDate = (date: string) => {
     setSelectedDate(date)
   }
+  const [todayData, setTodayData] = useState<DayData | null>(null)
 
   // testing selected date
   useEffect(() => {
     console.log(selectedDate)
   }, [selectedDate])
+
+  useEffect(() => {
+    if (!selectedDate) return
+
+    async function fetchData(selectedDate: string) {
+      const day = await getOneDay(selectedDate)
+      if (day) {
+        setTodayData(day as DayData)
+      } else {
+        setTodayData(null)
+      }
+    }
+    fetchData(selectedDate)
+  }, [selectedDate])
+
+  useEffect(() => {
+    console.log("Today data: ", todayData)
+    console.log("Todays flow: ", todayData?.flow_intensity)
+  }, [todayData])
 
   return (
     <SafeAreaProvider>
@@ -28,6 +50,11 @@ export default function FlowCalendar() {
               ...(selectedDate && {
                 [selectedDate]: { selected: true },
               }),
+              "2024-11-04": {
+                marked: true,
+                dotColor: "pink",
+                selected: selectedDate === "2024-11-04",
+              },
               "2024-11-05": {
                 marked: true,
                 dotColor: "red",
@@ -39,8 +66,15 @@ export default function FlowCalendar() {
                 dotColor: "red",
                 activeOpacity: 0,
               },
+              "2024-11-07": {
+                marked: true,
+                dotColor: "pink",
+                selected: selectedDate === "2024-11-07",
+              },
             }}
-            onDayPress={(day) => handleSelectDate(day.dateString)}
+            onDayPress={(day: { dateString: string }) =>
+              handleSelectDate(day.dateString)
+            }
             theme={{
               backgroundColor: "#ffffff",
               calendarBackground: "#ffffff",
@@ -64,7 +98,12 @@ export default function FlowCalendar() {
             }}
           />
         </View>
-        {selectedDate && <DayView date={selectedDate} />}
+        {selectedDate && (
+          <DayView
+            date={selectedDate}
+            dateFlow={todayData?.flow_intensity ? todayData.flow_intensity : 0}
+          />
+        )}
       </SafeAreaView>
     </SafeAreaProvider>
   )
