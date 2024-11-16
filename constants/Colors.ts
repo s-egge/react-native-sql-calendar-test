@@ -3,24 +3,38 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+const tintColorLight = "#2f95dc"
+const tintColorDark = "#fff"
 
+// cool gradient tool: https://cssgradient.io/
+export const FlowColors = ["#fff", "#ffafaf", "#ff6666", "#da2020", "#990000"]
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
+    text: "#000",
+    background: "#fff",
     tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
+    tabIconDefault: "#ccc",
     tabIconSelected: tintColorLight,
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
+    text: "#fff",
+    background: "#000",
     tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
+    tabIconDefault: "#ccc",
     tabIconSelected: tintColorDark,
   },
-};
+  flowLight: {
+    none: "#fff",
+    spotting: "#FFC0CB",
+    light: "#FFA07A",
+    medium: "#FF6347",
+    heavy: "#FF4500",
+  },
+  flowDark: {
+    none: "#151718",
+    spotting: "#FFC0CB",
+    light: "#FFA07A",
+    medium: "#FF6347",
+    heavy: "#FF4500",
+  },
+}
