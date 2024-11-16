@@ -1,10 +1,13 @@
-import { useState, useEffect, useMemo } from "react"
-import { StyleSheet, View, Button } from "react-native"
+import { useState, useEffect } from "react"
+import { StyleSheet, View, Text, StatusBar, ScrollView } from "react-native"
 import { Calendar } from "react-native-calendars"
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context"
+import { SafeAreaView } from "react-native-safe-area-context"
 import DayView from "@/components/DayView"
 import { getOneDay, getAllDays } from "@/db/database"
 import type { DayData } from "@/constants/Interfaces"
+import { Button } from "tamagui"
+import { FlowColors } from "@/constants/Colors"
+import { Platform } from "react-native"
 
 export default function FlowCalendar() {
   // get today's date
@@ -26,7 +29,10 @@ export default function FlowCalendar() {
       allDays.forEach((day: any) => {
         newMarkedDates[day.date] = {
           marked: true,
-          dotColor: day.flow_intensity > 0 ? "red" : "transparent",
+          dotColor:
+            day.flow_intensity > 0
+              ? FlowColors[day.flow_intensity]
+              : "transparent",
           selected: day.date === today,
         }
       })
@@ -83,58 +89,64 @@ export default function FlowCalendar() {
   }, [todayData])
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView>
+    <SafeAreaView style={styles.container}>
+      <View>
+        <Button variant="outlined" onPress={refreshCalendar}>
+          Refresh Calendar
+        </Button>
+        <Calendar
+          key={markedDatesObj}
+          maxDate={today}
+          markedDates={markedDatesObj}
+          onDayPress={(day: { dateString: string }) =>
+            handleSelectDate(day.dateString)
+          }
+          theme={{
+            backgroundColor: "#ffffff",
+            calendarBackground: "#ffffff",
+            textSectionTitleColor: "#b6c1cd",
+            selectedDayBackgroundColor: "#00adf5",
+            selectedDayTextColor: "#ffffff",
+            todayTextColor: "#00adf5",
+            dayTextColor: "#2d4150",
+            textDisabledColor: "#d9e1e8",
+            dotColor: "#00adf5",
+            selectedDotColor: "#ffffff",
+            arrowColor: "#00adf5",
+            monthTextColor: "#00adf5",
+            indicatorColor: "blue",
+            textDayFontFamily: "monospace",
+            textMonthFontFamily: "monospace",
+            textDayHeaderFontFamily: "monospace",
+            textDayFontSize: 16,
+            textMonthFontSize: 16,
+            textDayHeaderFontSize: 16,
+          }}
+        />
+      </View>
+      <ScrollView>
         <View>
-          <View style={styles.button}>
-            <Button title="Refresh Calendar" onPress={refreshCalendar}></Button>
-          </View>
-          <Calendar
-            key={markedDatesObj}
-            maxDate={today}
-            markedDates={markedDatesObj}
-            onDayPress={(day: { dateString: string }) =>
-              handleSelectDate(day.dateString)
-            }
-            theme={{
-              backgroundColor: "#ffffff",
-              calendarBackground: "#ffffff",
-              textSectionTitleColor: "#b6c1cd",
-              selectedDayBackgroundColor: "#00adf5",
-              selectedDayTextColor: "#ffffff",
-              todayTextColor: "#00adf5",
-              dayTextColor: "#2d4150",
-              textDisabledColor: "#d9e1e8",
-              dotColor: "#00adf5",
-              selectedDotColor: "#ffffff",
-              arrowColor: "#00adf5",
-              monthTextColor: "#00adf5",
-              indicatorColor: "blue",
-              textDayFontFamily: "monospace",
-              textMonthFontFamily: "monospace",
-              textDayHeaderFontFamily: "monospace",
-              textDayFontSize: 16,
-              textMonthFontSize: 16,
-              textDayHeaderFontSize: 16,
-            }}
-          />
+          {selectedDate && (
+            <DayView
+              date={selectedDate}
+              dateFlow={
+                todayData?.flow_intensity ? todayData.flow_intensity : 0
+              }
+            />
+          )}
         </View>
-        {selectedDate && (
-          <DayView
-            date={selectedDate}
-            dateFlow={todayData?.flow_intensity ? todayData.flow_intensity : 0}
-          />
-        )}
-      </SafeAreaView>
-    </SafeAreaProvider>
+      </ScrollView>
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: "#ffffff",
-    margin: 8,
-    borderRadius: 8,
-    padding: 4,
+  container: {
+    flex: 1,
+    paddingTop: StatusBar.currentHeight,
+    paddingBottom: Platform.select({
+      ios: 50,
+      default: 0,
+    }),
   },
 })

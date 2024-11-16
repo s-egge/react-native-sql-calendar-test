@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react"
-import { Image, StyleSheet, Button } from "react-native"
+import { Image, StyleSheet } from "react-native"
 import ParallaxScrollView from "@/components/ParallaxScrollView"
 import { ThemedText } from "@/components/ThemedText"
 import { ThemedView } from "@/components/ThemedView"
 import { getAllDays, deleteAllDays } from "@/db/database"
+import { Button } from "tamagui"
 
 const flows = ["None", "Spotting", "Light", "Medium", "Heavy"]
 
@@ -38,15 +39,10 @@ export default function HomeScreen() {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Calendar/DB Testing</ThemedText>
       </ThemedView>
-      <ThemedView style={styles.button}>
-        <Button title="View DB Data" onPress={() => setShowData(!showData)} />
-      </ThemedView>
-      <ThemedView style={styles.button}>
-        <Button
-          title="Delete DB Data"
-          onPress={() => deleteAllDays().then(() => setShowData(false))}
-        />
-      </ThemedView>
+      <Button onPress={() => setShowData(!showData)}>View DB Data</Button>
+      <Button onPress={() => deleteAllDays().then(() => setShowData(false))}>
+        Delete DB Data
+      </Button>
       <ThemedView style={styles.stepContainer}>
         {data &&
           data.map((day: any) => (
@@ -75,12 +71,5 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     position: "absolute",
-  },
-  button: {
-    width: "60%",
-    alignSelf: "center",
-    backgroundColor: "#ffffff",
-    padding: 10,
-    borderRadius: 5,
   },
 })
