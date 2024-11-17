@@ -4,7 +4,15 @@ This repo is for starting a React Native w/Expo app from scratch in order to tes
 
 There are bugs, especially with the data not syncing up well when saving or changing days without refreshing the calendar manually with the button. I didn't bother implementing loading indicators either.
 
-https://github.com/user-attachments/assets/c47b23b5-37fc-4ff4-ab49-e73dd519aee0
+Below are demos of some implementation with [React Native Paper](https://callstack.github.io/react-native-paper/) for styling.
+### Android / Light-mode
+https://github.com/user-attachments/assets/33d3bf81-7e3d-4319-a793-2b6b1c460570
+
+
+### iPhone / Dark-mode
+https://github.com/user-attachments/assets/1940f7e9-cb23-49d5-b70f-4e58b3cd0497
+
+
 
 
 ## Running The Project
