@@ -1,12 +1,12 @@
-import { useState, useEffect, useMemo } from "react"
-import { StyleSheet, View } from "react-native"
+import { useState, useEffect } from "react"
+import { StyleSheet, View, ScrollView, Platform, StatusBar } from "react-native"
 import { Calendar } from "react-native-calendars"
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context"
 import DayView from "@/components/DayView"
 import { getOneDay, getAllDays } from "@/db/database"
 import type { DayData } from "@/constants/Interfaces"
 import { Button } from "react-native-paper"
-import { useTheme } from "react-native-paper"
+import { useTheme, Divider } from "react-native-paper"
 import { FlowColors } from "@/constants/Colors"
 
 export default function FlowCalendar() {
@@ -19,6 +19,18 @@ export default function FlowCalendar() {
   }
   const [todayData, setTodayData] = useState<DayData | null>(null)
   const [markedDatesObj, setMarkedDates] = useState<any>({})
+
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: theme.colors.background,
+      flex: 1,
+      paddingTop: StatusBar.currentHeight,
+      paddingBottom: Platform.select({
+        ios: 50,
+        default: 0,
+      }),
+    },
+  })
 
   async function refreshCalendar() {
     const allDays = await getAllDays()
@@ -91,7 +103,7 @@ export default function FlowCalendar() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView>
+      <SafeAreaView style={styles.container}>
         <View style={{ backgroundColor: theme.colors.background, padding: 4 }}>
           <Button mode="elevated" onPress={refreshCalendar}>
             Refresh Calendar
@@ -121,16 +133,21 @@ export default function FlowCalendar() {
               textDayHeaderFontSize: 16,
             }}
           />
+          <Divider />
         </View>
-        {selectedDate && (
-          <DayView
-            date={selectedDate}
-            dateFlow={todayData?.flow_intensity ? todayData.flow_intensity : 0}
-          />
-        )}
+        <ScrollView>
+          <View>
+            {selectedDate && (
+              <DayView
+                date={selectedDate}
+                dateFlow={
+                  todayData?.flow_intensity ? todayData.flow_intensity : 0
+                }
+              />
+            )}
+          </View>
+        </ScrollView>
       </SafeAreaView>
     </SafeAreaProvider>
   )
 }
-
-const styles = StyleSheet.create({})
