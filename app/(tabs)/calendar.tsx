@@ -1,12 +1,16 @@
-import { useState, useEffect, useMemo } from "react"
-import { StyleSheet, View, Button } from "react-native"
+import { useState, useEffect } from "react"
+import { StyleSheet, View, ScrollView, Platform, StatusBar } from "react-native"
 import { Calendar } from "react-native-calendars"
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context"
 import DayView from "@/components/DayView"
 import { getOneDay, getAllDays } from "@/db/database"
 import type { DayData } from "@/constants/Interfaces"
+import { Button } from "react-native-paper"
+import { useTheme, Divider } from "react-native-paper"
+import { FlowColors } from "@/constants/Colors"
 
 export default function FlowCalendar() {
+  const theme = useTheme()
   // get today's date
   const today = new Date().toISOString().split("T")[0]
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
@@ -15,6 +19,18 @@ export default function FlowCalendar() {
   }
   const [todayData, setTodayData] = useState<DayData | null>(null)
   const [markedDatesObj, setMarkedDates] = useState<any>({})
+
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: theme.colors.background,
+      flex: 1,
+      paddingTop: StatusBar.currentHeight,
+      paddingBottom: Platform.select({
+        ios: 50,
+        default: 0,
+      }),
+    },
+  })
 
   async function refreshCalendar() {
     const allDays = await getAllDays()
@@ -26,7 +42,10 @@ export default function FlowCalendar() {
       allDays.forEach((day: any) => {
         newMarkedDates[day.date] = {
           marked: true,
-          dotColor: day.flow_intensity > 0 ? "red" : "transparent",
+          dotColor:
+            day.flow_intensity > 0
+              ? FlowColors[day.flow_intensity]
+              : "transparent",
           selected: day.date === today,
         }
       })
@@ -84,11 +103,11 @@ export default function FlowCalendar() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView>
-        <View>
-          <View style={styles.button}>
-            <Button title="Refresh Calendar" onPress={refreshCalendar}></Button>
-          </View>
+      <SafeAreaView style={styles.container}>
+        <View style={{ backgroundColor: theme.colors.background, padding: 4 }}>
+          <Button mode="elevated" onPress={refreshCalendar}>
+            Refresh Calendar
+          </Button>
           <Calendar
             key={markedDatesObj}
             maxDate={today}
@@ -97,19 +116,15 @@ export default function FlowCalendar() {
               handleSelectDate(day.dateString)
             }
             theme={{
-              backgroundColor: "#ffffff",
-              calendarBackground: "#ffffff",
-              textSectionTitleColor: "#b6c1cd",
-              selectedDayBackgroundColor: "#00adf5",
-              selectedDayTextColor: "#ffffff",
-              todayTextColor: "#00adf5",
-              dayTextColor: "#2d4150",
-              textDisabledColor: "#d9e1e8",
-              dotColor: "#00adf5",
-              selectedDotColor: "#ffffff",
-              arrowColor: "#00adf5",
-              monthTextColor: "#00adf5",
-              indicatorColor: "blue",
+              calendarBackground: theme.colors.background,
+              textSectionTitleColor: theme.colors.secondary,
+              selectedDayBackgroundColor: theme.colors.primary,
+              selectedDayTextColor: theme.colors.onPrimary,
+              todayTextColor: theme.colors.primary,
+              dayTextColor: theme.colors.onBackground,
+              textDisabledColor: theme.colors.surfaceVariant,
+              arrowColor: theme.colors.primary,
+              monthTextColor: theme.colors.primary,
               textDayFontFamily: "monospace",
               textMonthFontFamily: "monospace",
               textDayHeaderFontFamily: "monospace",
@@ -118,23 +133,21 @@ export default function FlowCalendar() {
               textDayHeaderFontSize: 16,
             }}
           />
+          <Divider />
         </View>
-        {selectedDate && (
-          <DayView
-            date={selectedDate}
-            dateFlow={todayData?.flow_intensity ? todayData.flow_intensity : 0}
-          />
-        )}
+        <ScrollView>
+          <View>
+            {selectedDate && (
+              <DayView
+                date={selectedDate}
+                dateFlow={
+                  todayData?.flow_intensity ? todayData.flow_intensity : 0
+                }
+              />
+            )}
+          </View>
+        </ScrollView>
       </SafeAreaView>
     </SafeAreaProvider>
   )
 }
-
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: "#ffffff",
-    margin: 8,
-    borderRadius: 8,
-    padding: 4,
-  },
-})
