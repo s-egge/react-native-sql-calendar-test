@@ -14,6 +14,7 @@ const MAPPING = {
   calendar: "calendar-month",
   "chevron.left.forwardslash.chevron.right": "code",
   "chevron.right": "chevron-right",
+  gearshape: "settings",
 } as Partial<
   Record<
     import("expo-symbols").SymbolViewProps["name"],

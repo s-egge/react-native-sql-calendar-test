@@ -20,13 +20,14 @@ export default function FlowCalendar() {
   const [todayData, setTodayData] = useState<DayData | null>(null)
   const [markedDatesObj, setMarkedDates] = useState<any>({})
 
+  // Since iOS bar uses absolute positon for blur affect, we have to adjust padding to bottom of container
   const styles = StyleSheet.create({
     container: {
       backgroundColor: theme.colors.background,
       flex: 1,
       paddingTop: StatusBar.currentHeight,
       paddingBottom: Platform.select({
-        ios: 50,
+        ios: 70,
         default: 0,
       }),
     },
@@ -60,11 +61,7 @@ export default function FlowCalendar() {
     refreshCalendar()
   }, [])
 
-  // testing selected date
-  useEffect(() => {
-    console.log(selectedDate)
-  }, [selectedDate])
-
+  // get data for selected date on calendar (when user presses a different day)
   useEffect(() => {
     if (!selectedDate) return
 
@@ -95,11 +92,6 @@ export default function FlowCalendar() {
     }
     fetchData(selectedDate)
   }, [selectedDate])
-
-  useEffect(() => {
-    console.log("Today data: ", todayData)
-    console.log("Todays flow: ", todayData?.flow_intensity)
-  }, [todayData])
 
   return (
     <SafeAreaProvider>

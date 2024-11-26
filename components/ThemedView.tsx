@@ -1,14 +1,14 @@
-import { View, type ViewProps } from 'react-native';
+import { View, type ViewProps } from "react-native"
+import { useTheme } from "react-native-paper"
 
-import { useThemeColor } from '@/hooks/useThemeColor';
+// ThemedView altered from Expo Go's example to use React Native Paper's useTheme
+export function ThemedView({ style, ...otherProps }: ViewProps) {
+  const theme = useTheme()
 
-export type ThemedViewProps = ViewProps & {
-  lightColor?: string;
-  darkColor?: string;
-};
-
-export function ThemedView({ style, lightColor, darkColor, ...otherProps }: ThemedViewProps) {
-  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
-
-  return <View style={[{ backgroundColor }, style]} {...otherProps} />;
+  return (
+    <View
+      style={[{ backgroundColor: theme.colors.background }, style]}
+      {...otherProps}
+    />
+  )
 }
